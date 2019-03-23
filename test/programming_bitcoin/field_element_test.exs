@@ -34,7 +34,34 @@ defmodule ProgrammingBitcoin.FieldElementTest do
 
   test "sub/2 raise exception when two prime are not equal" do
     assert_raise RuntimeError, fn ->
-      FieldElement.add(FieldElement.new(5, 7), FieldElement.new(6, 13))
+      FieldElement.sub(FieldElement.new(5, 7), FieldElement.new(6, 13))
     end
   end
+
+  test "mul/2 return field element after subtracting them and return remainder after modulo operation with prime" do
+    assert FieldElement.mul(FieldElement.new(3, 13), FieldElement.new(12, 13)) ==
+             FieldElement.new(10, 13)
+  end
+
+  test "mul/2 raise exception when two prime are not equal" do
+    assert_raise RuntimeError, fn ->
+      FieldElement.mul(FieldElement.new(3, 13), FieldElement.new(3, 19))
+    end
+  end
+
+  test "pow/2 return field element after subtracting them and return remainder after modulo operation with prime" do
+    assert FieldElement.pow(FieldElement.new(3, 13), 3) ==
+             FieldElement.new(1, 13)
+  end
+
+  test "pow/2 can handle negative exponent" do
+    assert FieldElement.pow(FieldElement.new(7, 13), -3) ==
+             FieldElement.new(8, 13)
+  end
+
+  test "truediv/2 return field element after subtracting them and return remainder after modulo operation with prime" do
+    assert FieldElement.truediv(FieldElement.new(2, 19), FieldElement.new(7, 19)) ==
+             FieldElement.new(3, 19)
+  end
+
 end
