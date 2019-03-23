@@ -11,6 +11,9 @@ defmodule ProgrammingBitcoin.FieldElement do
           prime: integer()
         }
 
+  import ProgrammingBitcoin.MathUtils, only: [mod: 2, math_pow: 2]
+
+
   @spec new(integer, integer) :: t()
   def new(num, prime) when num >= 0 and num < prime,
     do: %__MODULE__{num: num, prime: prime}
@@ -69,14 +72,4 @@ defmodule ProgrammingBitcoin.FieldElement do
     new(mod(num1 * math_pow(num2, prime - 2), prime), prime)
   end
 
-  # modulo operation for always returning the same sign as the denominator
-  defp mod(x, n) do
-    rem(rem(x, n) + n, n)
-  end
-
-  defp math_pow(x, y) when is_integer(x) and is_integer(y) do
-    Kernel.trunc(:math.pow(x, y))
-  end
-
-  defp math_pow(x, y), do: :math.pow(x, y)
 end
