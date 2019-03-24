@@ -4,6 +4,7 @@ defmodule ProgrammingBitcoin.EllipticCurve do
   """
 
   alias ProgrammingBitcoin.EllipticCurvePoint
+  import ProgrammingBitcoin.MathUtils, only: [math_pow: 2]
 
   @spec add(EllipticCurvePoint.t(), EllipticCurvePoint.t()) :: EllipticCurvePoint.t()
   def add(
@@ -37,6 +38,7 @@ defmodule ProgrammingBitcoin.EllipticCurve do
   def add(
         %EllipticCurvePoint{
           point: %{
+            x: x,
             y: y1
           },
           a: a,
@@ -44,11 +46,58 @@ defmodule ProgrammingBitcoin.EllipticCurve do
         },
         %EllipticCurvePoint{
           point: %{
+            x: x,
             y: y2
           }
         }
       )
       when y1 == -y2 do
     EllipticCurvePoint.get_infinity(a, b)
+  end
+
+  # tanget. both point are the same
+  def add(
+        %EllipticCurvePoint{
+          point: %{
+            x: x,
+            y: y
+          },
+          a: a,
+          b: b
+        },
+        %EllipticCurvePoint{
+          point: %{
+            x: x,
+            y: y
+          }
+        }
+      ) do
+    s = (3 * :math.pow(x, 2) + a) / (2 * y)
+    x3 = math_pow(s, 2) - 2 * x
+    y3 = s * (x - x3) - y
+    EllipticCurvePoint.new(x3, y3, a, b)
+  end
+
+  # normal addition
+  def add(
+        %EllipticCurvePoint{
+          point: %{
+            x: x1,
+            y: y1
+          },
+          a: a,
+          b: b
+        },
+        %EllipticCurvePoint{
+          point: %{
+            x: x2,
+            y: y2
+          }
+        }
+      ) do
+    s = (y1 - y2) / (x1 - x2)
+    x3 = math_pow(s, 2) - x1 - x2
+    y3 = s * (x1 - x3) - y1
+    EllipticCurvePoint.new(x3, y3, a, b)
   end
 end
