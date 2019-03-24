@@ -72,10 +72,7 @@ defmodule ProgrammingBitcoin.EllipticCurve do
           }
         }
       ) do
-    s = (3 * :math.pow(x, 2) + a) / (2 * y)
-    x3 = math_pow(s, 2) - 2 * x
-    y3 = s * (x - x3) - y
-    EllipticCurvePoint.new(x3, y3, a, b)
+    EllipticCurvePoint.get_infinity(a, b)
   end
 
   # normal addition
