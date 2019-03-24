@@ -60,4 +60,5 @@ defmodule ProgrammingBitcoin.EllipticCurvePoint do
   def get_infinity(a, b) do
     get_infinity(to_decimal(a), to_decimal(b))
   end
+
 end
