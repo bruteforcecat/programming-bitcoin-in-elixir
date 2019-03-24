@@ -9,7 +9,7 @@ defmodule ProgrammingBitcoin.MathUtils do
   end
 
   # currently only supoort decimal ^ integer
-  @spec math_pow(Decimal.t(), number()) :: Decimal.t()
+  @spec math_pow(Decimal.t() | integer(), integer()) :: Decimal.t() | number()
   def math_pow(%Decimal{} = d, exp) when is_integer(exp) do
     Enum.reduce(1..exp, 1, fn _, result ->
       Decimal.mult(d, result)

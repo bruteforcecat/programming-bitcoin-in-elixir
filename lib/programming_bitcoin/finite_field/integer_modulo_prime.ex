@@ -76,6 +76,9 @@ defimpl ProgrammingBitcoin.FiniteField, for: ProgrammingBitcoin.FieldField.Integ
   def pow(%IntegerModuloPrime{num: num, prime: prime}, exponent) when is_integer(exponent) do
     # mod(exponent, prime - 1) to force a number out of negative
     # Make the exponent into something within the 0 to p–2 range, inclusive.
-    IntegerModuloPrime.new(mod(Kernel.trunc(math_pow(num, mod(exponent, prime - 1))), prime), prime)
+    IntegerModuloPrime.new(
+      mod(Kernel.trunc(math_pow(num, mod(exponent, prime - 1))), prime),
+      prime
+    )
   end
 end
