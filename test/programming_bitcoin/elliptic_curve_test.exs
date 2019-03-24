@@ -6,9 +6,9 @@ defmodule ProgrammingBitcoin.EllipticCurveTest do
   alias ProgrammingBitcoin.EllipticCurvePoint
 
   test "add/2 return the point itself when adding it to identity" do
-    a = 5
-    b = 7
-    point = EllipticCurvePoint.new(-1, 1, a, b)
+    a = Decimal.new(5)
+    b = Decimal.new(7)
+    point = EllipticCurvePoint.new(Decimal.new(-1), Decimal.new(1), a, b)
     assert EllipticCurve.add(point, EllipticCurvePoint.get_infinity(a, b)) == point
     assert EllipticCurve.add(EllipticCurvePoint.get_infinity(a, b), point) == point
   end

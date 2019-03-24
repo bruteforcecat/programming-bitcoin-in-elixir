@@ -7,7 +7,7 @@ defmodule ProgrammingBitcoin.Point do
   defstruct [:x, :y]
 
   @type t() :: %__MODULE__{
-          x: float(),
-          y: float()
+          x: Decimal.t(),
+          y: Decimal.t()
         }
 end

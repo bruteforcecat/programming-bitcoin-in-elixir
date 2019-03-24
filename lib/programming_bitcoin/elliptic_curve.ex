@@ -5,18 +5,9 @@ defmodule ProgrammingBitcoin.EllipticCurve do
 
   alias ProgrammingBitcoin.EllipticCurvePoint
   import ProgrammingBitcoin.MathUtils, only: [math_pow: 2]
+  require ProgrammingBitcoin
 
   @spec add(EllipticCurvePoint.t(), EllipticCurvePoint.t()) :: EllipticCurvePoint.t()
-  def add(
-        %EllipticCurvePoint{point: nil, a: a1, b: b1} = p1,
-        %EllipticCurvePoint{
-          a: a2,
-          b: b2
-        } = p2
-      )
-      when a1 != a2 or b1 != b2 do
-    raise "#{p1} and #{p2} not in the save curve"
-  end
 
   def add(
         %EllipticCurvePoint{point: nil},
@@ -34,67 +25,45 @@ defmodule ProgrammingBitcoin.EllipticCurve do
     p1
   end
 
-  # inverse addition
+  # we are using Decimal. so we can only pattern matching inside function body instead in guard
   def add(
-        %EllipticCurvePoint{
-          point: %{
-            x: x,
-            y: y1
-          },
-          a: a,
-          b: b
-        },
-        %EllipticCurvePoint{
-          point: %{
-            x: x,
-            y: y2
-          }
-        }
-      )
-      when y1 == -y2 do
-    EllipticCurvePoint.get_infinity(a, b)
-  end
-
-  # tanget. both point are the same
-  def add(
-        %EllipticCurvePoint{
-          point: %{
-            x: x,
-            y: y
-          },
-          a: a,
-          b: b
-        },
-        %EllipticCurvePoint{
-          point: %{
-            x: x,
-            y: y
-          }
-        }
+        p1,
+        p2
       ) do
-    EllipticCurvePoint.get_infinity(a, b)
-  end
+    case {p1, p2} do
+      # tanget. both point are the same
+      {%EllipticCurvePoint{
+         a: a,
+         b: b
+       } = p, p} ->
+        EllipticCurvePoint.get_infinity(a, b)
 
-  # normal addition
-  def add(
-        %EllipticCurvePoint{
-          point: %{
-            x: x1,
-            y: y1
-          },
-          a: a,
-          b: b
-        },
-        %EllipticCurvePoint{
-          point: %{
-            x: x2,
-            y: y2
-          }
-        }
-      ) do
-    s = (y1 - y2) / (x1 - x2)
-    x3 = math_pow(s, 2) - x1 - x2
-    y3 = s * (x1 - x3) - y1
-    EllipticCurvePoint.new(x3, y3, a, b)
+      {%EllipticCurvePoint{
+         point: %{
+           x: x1,
+           y: y1
+         },
+         a: a,
+         b: b
+       },
+       %EllipticCurvePoint{
+         point: %{
+           x: x2,
+           y: y2
+         }
+       }} ->
+        # inverse
+        if Decimal.equal?(x1, x2) and Decimal.equal?(y1, Decimal.minus(y2)) do
+          EllipticCurvePoint.get_infinity(a, b)
+        else
+          s = Decimal.div(Decimal.sub(y1, y2), Decimal.sub(x1, x2))
+          x3 = Decimal.sub(Decimal.sub(math_pow(s, 2), x1), x2)
+          y3 = Decimal.sub(Decimal.mult(s, Decimal.sub(x1, x3)), y1)
+          EllipticCurvePoint.new(x3, y3, a, b)
+        end
+
+      _ ->
+        raise "#{p1} and #{p2} not in the save curve"
+    end
   end
 end

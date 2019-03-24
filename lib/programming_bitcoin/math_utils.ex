@@ -8,9 +8,15 @@ defmodule ProgrammingBitcoin.MathUtils do
     rem(rem(x, n) + n, n)
   end
 
-  def math_pow(x, y) when is_integer(x) and is_integer(y) do
-    Kernel.trunc(:math.pow(x, y))
+  # currently only supoort decimal ^ integer
+  @spec math_pow(Decimal.t(), number()) :: Decimal.t()
+  def math_pow(%Decimal{} = d, exp) when is_integer(exp) do
+    Enum.reduce(1..exp, 1, fn _, result ->
+      Decimal.mult(d, result)
+    end)
   end
 
-  def math_pow(x, y), do: :math.pow(x, y)
+  def math_pow(d, exp) when is_integer(exp) and is_integer(d) do
+    Kernel.trunc(:math.pow(d, exp))
+  end
 end

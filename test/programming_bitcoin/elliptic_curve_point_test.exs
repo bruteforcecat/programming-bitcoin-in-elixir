@@ -6,13 +6,13 @@ defmodule ProgrammingBitcoin.EllipticCurvePointTest do
   alias ProgrammingBitcoin.Point
 
   test "new/2 constructor work for proper num and prime" do
-    assert EllipticCurvePoint.new(-1, 1, 5, 7) == %EllipticCurvePoint{
+    assert EllipticCurvePoint.new(Decimal.new(-1), Decimal.new(1), Decimal.new(5), Decimal.new(7)) == %EllipticCurvePoint{
              point: %Point{
-               x: -1,
-               y: 1
+               x: Decimal.new(-1),
+               y: Decimal.new(1)
              },
-             a: 5,
-             b: 7
+             a: Decimal.new(5),
+             b: Decimal.new(7)
            }
   end
 
