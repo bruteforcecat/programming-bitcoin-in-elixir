@@ -6,24 +6,34 @@ defmodule ProgrammingBitcoin.EllipticCurvePoint do
   @enforce_keys [:point, :a, :b]
   defstruct [:point, :a, :b]
 
-  alias ProgrammingBitcoin.Point
+  alias ProgrammingBitcoin.FiniteField
   import ProgrammingBitcoin.MathUtils, only: [math_pow: 2]
 
-  @type num :: Decimal.t() | float() | integer
+  @type real_num :: Decimal.t() | float() | integer
+  @type num :: Decimal.t() | FiniteField.t()
+  @type num_for_new :: real_num | num
   # For simplicity, assume only for integer
   @type t() :: %__MODULE__{
-          point: Point.t() | nil,
-          a: Decimal.t(),
-          b: Decimal.t()
+          point:
+            %{
+              x: num,
+              y: num
+            }
+            | nil,
+          a: num,
+          b: num
         }
-  @spec new(num(), num(), num(), num()) :: t()
+  @spec new(num_for_new(), num_for_new(), num_for_new(), num_for_new()) :: t()
   def new(%Decimal{} = x, %Decimal{} = y, %Decimal{} = a, %Decimal{} = b) do
     if Decimal.equal?(
          math_pow(y, 2),
          Decimal.add(Decimal.add(math_pow(x, 3), Decimal.mult(a, x)), b)
        ) do
       %__MODULE__{
-        point: %Point{x: x, y: y},
+        point: %{
+          x: x,
+          y: y
+        },
         a: a,
         b: b
       }
@@ -33,7 +43,23 @@ defmodule ProgrammingBitcoin.EllipticCurvePoint do
   end
 
   def new(x, y, a, b) do
-    new(to_decimal(x), to_decimal(y), to_decimal(a), to_decimal(b))
+    if Enum.all?([x, y, a, b], &FiniteField.impl_for/1) do
+      if FiniteField.pow(y, 2) ==
+           FiniteField.add(FiniteField.add(FiniteField.pow(x, 3), FiniteField.mul(a, x)), b) do
+        %__MODULE__{
+          point: %{
+            x: x,
+            y: y
+          },
+          a: a,
+          b: b
+        }
+      else
+        raise "(#{x}, #{y}) is not on the curve"
+      end
+    else
+      new(to_decimal(x), to_decimal(y), to_decimal(a), to_decimal(b))
+    end
   end
 
   defp to_decimal(x) when is_integer(x) do
@@ -60,5 +86,4 @@ defmodule ProgrammingBitcoin.EllipticCurvePoint do
   def get_infinity(a, b) do
     get_infinity(to_decimal(a), to_decimal(b))
   end
-
 end

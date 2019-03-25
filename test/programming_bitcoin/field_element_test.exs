@@ -1,8 +1,8 @@
-defmodule ProgrammingBitcoin.FieldField.IntegerModuloPrimeTest do
+defmodule ProgrammingBitcoin.FiniteField.IntegerModuloPrimeTest do
   use ExUnit.Case
-  doctest ProgrammingBitcoin.FieldField.IntegerModuloPrime
+  doctest ProgrammingBitcoin.FiniteField.IntegerModuloPrime
 
-  alias ProgrammingBitcoin.FieldField.IntegerModuloPrime
+  alias ProgrammingBitcoin.FiniteField.IntegerModuloPrime
   alias ProgrammingBitcoin.FiniteField
 
   test "new/2 constructor work for proper num and prime" do

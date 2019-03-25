@@ -1,4 +1,4 @@
-defmodule ProgrammingBitcoin.FieldField.IntegerModuloPrime do
+defmodule ProgrammingBitcoin.FiniteField.IntegerModuloPrime do
   @moduledoc """
   One of Finite Field: Interger modulo prime
   """
@@ -16,8 +16,8 @@ defmodule ProgrammingBitcoin.FieldField.IntegerModuloPrime do
     do: %__MODULE__{num: num, prime: prime}
 end
 
-defimpl ProgrammingBitcoin.FiniteField, for: ProgrammingBitcoin.FieldField.IntegerModuloPrime do
-  alias ProgrammingBitcoin.FieldField.IntegerModuloPrime
+defimpl ProgrammingBitcoin.FiniteField, for: ProgrammingBitcoin.FiniteField.IntegerModuloPrime do
+  alias ProgrammingBitcoin.FiniteField.IntegerModuloPrime
   import ProgrammingBitcoin.MathUtils, only: [mod: 2, math_pow: 2]
 
   def add(%IntegerModuloPrime{num: num1, prime: prime}, %IntegerModuloPrime{
