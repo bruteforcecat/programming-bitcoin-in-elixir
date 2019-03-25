@@ -17,6 +17,8 @@ defmodule ProgrammingBitcoin.MathUtils do
   end
 
   def math_pow(d, exp) when is_integer(exp) and is_integer(d) do
-    Kernel.trunc(:math.pow(d, exp))
+    Enum.reduce(1..exp, 1, fn _, result ->
+      d * result
+    end)
   end
 end
